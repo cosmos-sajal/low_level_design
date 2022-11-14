@@ -9,6 +9,70 @@ class PrintGameBoard:
             print("")
 
 
+class PlayerWinLogic:
+    def did_player_win(self, size, board):
+        # check all horizontal tiles -
+        for i in range(0, size):
+            did_win = True
+            for j in range(0, size - 1):
+                if board[i][j] is None or board[i][j + 1] is None:
+                    did_win = False
+                    break
+                elif board[i][j].piece_type != \
+                        board[i][j + 1].piece_type:
+                    did_win = False
+                    break
+            if did_win:
+                return True
+
+        if did_win:
+            return True
+
+        # check all vertical tiles -
+        for i in range(0, size):
+            did_win = True
+            for j in range(0, size - 1):
+                if board[j][i] is None or board[j + 1][i] is None:
+                    did_win = False
+                    break
+                elif board[j][i].piece_type != \
+                        board[j + 1][i].piece_type:
+                    did_win = False
+                    break
+            if did_win:
+                return True
+
+        if did_win:
+            return True
+
+        # check 1st diagonal -
+        did_win = True
+        for i in range(0, size - 1):
+            if board[i][i] is None or board[i + 1][i + 1] is None:
+                did_win = False
+                break
+            elif board[i][i].piece_type != \
+                    board[i + 1][i + 1].piece_type:
+                did_win = False
+                break
+
+        if did_win:
+            return True
+
+        # check 2nd diagonal -
+        did_win = True
+        for i in range(size - 1, 0, -1):
+            if board[i][i] is None or board[i - 1][i - 1] is None:
+                did_win = False
+                break
+            elif board[i][i].piece_type != \
+                    board[i - 1][i - 1].piece_type:
+                did_win = False
+                break
+
+        return did_win
+
+
 class Game:
     def __init__(self, size):
         self.size_of_board = size
@@ -17,6 +81,7 @@ class Game:
         self.player_turn = 0
         self.move_count = 0
         self.print_game_board = PrintGameBoard()
+        self.win_logic = PlayerWinLogic()
 
     def __can_play_this_turn(self, pos_x, pos_y):
         if self.size_of_board <= pos_x or \
@@ -37,68 +102,6 @@ class Game:
     def __is_any_move_left(self):
         return self.move_count < self.size_of_board * self.size_of_board
 
-    def __did_player_win(self):
-        # check all horizontal tiles -
-        for i in range(0, self.size_of_board):
-            did_win = True
-            for j in range(0, self.size_of_board - 1):
-                if self.board[i][j] is None or self.board[i][j + 1] is None:
-                    did_win = False
-                    break
-                elif self.board[i][j].piece_type != \
-                        self.board[i][j + 1].piece_type:
-                    did_win = False
-                    break
-            if did_win:
-                return True
-
-        if did_win:
-            return True
-
-        # check all vertical tiles -
-        for i in range(0, self.size_of_board):
-            did_win = True
-            for j in range(0, self.size_of_board - 1):
-                if self.board[j][i] is None or self.board[j + 1][i] is None:
-                    did_win = False
-                    break
-                elif self.board[j][i].piece_type != \
-                        self.board[j + 1][i].piece_type:
-                    did_win = False
-                    break
-            if did_win:
-                return True
-
-        if did_win:
-            return True
-
-        # check 1st diagonal -
-        did_win = True
-        for i in range(0, self.size_of_board - 1):
-            if self.board[i][i] is None or self.board[i + 1][i + 1] is None:
-                did_win = False
-                break
-            elif self.board[i][i].piece_type != \
-                    self.board[i + 1][i + 1].piece_type:
-                did_win = False
-                break
-
-        if did_win:
-            return True
-
-        # check 2nd diagonal -
-        did_win = True
-        for i in range(self.size_of_board - 1, 0, -1):
-            if self.board[i][i] is None or self.board[i - 1][i - 1] is None:
-                did_win = False
-                break
-            elif self.board[i][i].piece_type != \
-                    self.board[i - 1][i - 1].piece_type:
-                did_win = False
-                break
-
-        return did_win
-
     def add_player(self, player):
         self.players.append(player)
 
@@ -118,7 +121,7 @@ class Game:
             self.__play_move(
                 pos_x, pos_y, self.players[self.player_turn])
 
-            if self.__did_player_win():
+            if self.win_logic.did_player_win(self.size_of_board, self.board):
                 self.print_game_board.print_board(
                     self.board, self.size_of_board)
                 print(f"Game Over, {self.players[self.player_turn].name} won!")
