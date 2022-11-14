@@ -61,12 +61,13 @@ class PlayerWinLogic:
 
         # check 2nd diagonal -
         did_win = True
-        for i in range(size - 1, 0, -1):
-            if board[i][i] is None or board[i - 1][i - 1] is None:
+        for i in range(0, size - 1):
+            if board[size - i - 1][i] is None or \
+                    board[size - i - 2][i + 1] is None:
                 did_win = False
                 break
-            elif board[i][i].piece_type != \
-                    board[i - 1][i - 1].piece_type:
+            elif board[size - i - 1][i].piece_type != \
+                    board[size - i - 2][i + 1].piece_type:
                 did_win = False
                 break
 
