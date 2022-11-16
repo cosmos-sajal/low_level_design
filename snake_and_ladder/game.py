@@ -6,16 +6,14 @@ from board import Board
 class Game:
     def __init__(
         self,
+        no_of_players,
         size_of_board,
         no_of_snakes,
         no_of_ladders
     ):
-        self.players = [
-            Player("Player 1"),
-            Player("Player 2"),
-            Player("Player 3"),
-            Player("Player 4")
-        ]
+        self.players = []
+        for i in range(0, no_of_players):
+            self.players.append(Player(f"Player {i + 1}"))
         self.player_turn = 0
         self.dice = Dice()
         self.board = Board(size_of_board, no_of_snakes, no_of_ladders)
